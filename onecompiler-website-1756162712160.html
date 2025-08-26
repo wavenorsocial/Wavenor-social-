@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="author" content="OneCompiler">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wavenor Social 🌊</title>
+  <link rel="icon" href="https://img.icons8.com/fluency/48/000000/waves.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600,700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      font-family: 'Montserrat', sans-serif;
+      background: radial-gradient(circle at 30% 20%, #a7f3d0 0%, #60a5fa 70%, #0ea5e9 100%);
+      min-height: 100vh;
+      animation: bgWave 10s ease-in-out infinite alternate;
+    }
+    @keyframes bgWave {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 100% 100%; }
+    }
+    /* Glassmorphism effect for cards and nav */
+    .glass-card {
+      background: rgba(255,255,255,0.82);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px 0 rgba(2,132,199,0.15);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(2,132,199,0.12);
+      transition: box-shadow 0.25s, transform 0.25s;
+    }
+    .glass-card:hover {
+      box-shadow: 0 12px 40px 0 rgba(2,132,199,0.25);
+      transform: translateY(-3px) scale(1.03);
+    }
+    .menu-link {
+      color: #2563eb;
+      text-decoration: underline;
+      cursor: pointer;
+      font-weight: 600;
+      transition: color 0.2s;
+      border-radius: 9999px;
+      padding: 0.5em 1em;
+      font-size: 1.05em;
+      background: transparent;
+      border: none;
+      outline: none;
+      margin: 0 2px;
+    }
+    .menu-link:hover {
+      color: #0ea5e9;
+      background: rgba(2,132,199,0.08);
+      text-decoration: underline;
+    }
+    .active-tab {
+      background: linear-gradient(90deg, #0284c7 40%, #22d3ee 100%);
+      color: white !important;
+      box-shadow: 0 0 15px #22d3ee66;
+      border-radius: 9999px;
+      text-decoration: none !important;
+    }
+    .nav-container {
+      background: rgba(255,255,255,0.85);
+      box-shadow: 0 4px 24px 0 rgba(2,132,199,0.09);
+      backdrop-filter: blur(8px);
+      border-radius: 0 0 28px 28px;
+      border-bottom: 1px solid #e0f7fa;
+    }
+    /* Modal styles */
+    .modal {
+      transition: opacity 0.3s;
+      z-index: 50;
+    }
+    .modal-bg {
+      background: rgba(0,0,0,0.45);
+      z-index: 49;
+      backdrop-filter: blur(1px);
+    }
+    /* Story circle */
+    .story-img {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #22d3ee;
+      margin-right: 8px;
+      transition: transform 0.2s, border-color 0.2s;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #0284c744;
+    }
+    .story-img:hover {
+      transform: scale(1.09) rotate(-2deg);
+      border-color: #0284c7;
+    }
+    .post-media {
+      border-radius: 18px;
+      margin-top: 10px;
+      max-width: 100%;
+      max-height: 340px;
+      box-shadow: 0 6px 20px #0284c733;
+      animation: fadeIn 0.8s;
+      border: 1.5px solid #22d3ee33;
+    }
+    @keyframes fadeIn {
+      from {opacity:0;}
+      to {opacity:1;}
+    }
+    .friend-name {
+      color: #2563eb;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.2s;
+      font-size: 1.09em;
+      padding: 2px 0;
+    }
+    .friend-name:hover {
+      color: #0ea5e9;
+      text-decoration: underline;
+    }
+    /* Reels */
+    .reel-video {
+      border-radius: 18px;
+      max-width: 100%;
+      max-height: 220px;
+      box-shadow: 0 4px 18px #0284c744;
+      border: 1.5px solid #22d3ee26;
+    }
+    .game-list-item, .game-room-list-item {
+      background: #e0f7fa;
+      border-radius: 18px;
+      padding: 13px 24px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 8px #22d3ee22;
+      transition: background 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 1.07em;
+      border: 1px solid #22d3ee22;
+    }
+    .game-list-item:hover, .game-room-list-item:hover {
+      background: #b2ebf2;
+      box-shadow: 0 7px 20px #22d3ee44;
+      transform: scale(1.03) translateY(-2px);
+    }
+    .ad-btn {
+      background: linear-gradient(90deg, #0284c7 0%, #22d3ee 100%);
+      color: #fff;
+      font-weight: 700;
+      border-radius: 9999px;
+      padding: 0.75em 2em;
+      box-shadow: 0 2px 12px #22d3ee33;
+      transition: background 0.2s, transform 0.2s;
+      cursor: pointer;
+      font-size: 1.07em;
+      border: none;
+      outline: none;
+    }
+    .ad-btn:hover {
+      background: linear-gradient(90deg, #22d3ee 0%, #0284c7 100%);
+      transform: scale(1.05) translateY(-2px);
+      box-shadow: 0 4px 20px #0284c744;
+    }
+    .ad-link {
+      color: #2563eb;
+      text-decoration: underline;
+      cursor: pointer;
+      font-weight: 600;
+      transition: color 0.2s;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-size: 1em;
+      padding: 0;
+    }
+    .ad-link:hover {
+      color: #0ea5e9;
+      text-decoration: underline;
+    }
+    /* Login modal custom styles */
+    .login-error {
+      color: #e53e3e;
+      font-size: 1em;
+      text-align: center;
+      margin-top: 6px;
+      animation: fadeIn 0.5s;
+    }
+    /* Hide main app when not logged in */
+    .hidden-app {
+      display: none !important;
+    }
+    /* Notification styles */
+    .notif-dot {
+      width: 10px;
+      height: 10px;
+      background: #22d3ee;
+      border-radius: 50%;
+      display: inline-block;
+      margin-left: 3px;
+      vertical-align: middle;
+      box-shadow: 0 0 5px #22d3ee66;
+      animation: notifDotPulse 1.2s infinite;
+    }
+    @keyframes notifDotPulse {
+      0% { box-shadow: 0 0 5px #22d3ee66;}
+      50% { box-shadow: 0 0 16px #22d3ee99;}
+      100% { box-shadow: 0 0 5px #22d3ee66;}
+    }
+    /* Chat styles */
+    .chat-bubble {
+      display: inline-block;
+      background: #e0f7fa;
+      border-radius: 18px;
+      padding: 12px 18px;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 8px #22d3ee22;
+      max-width: 70%;
+      animation: fadeIn 0.7s;
+      font-size: 1.04em;
+    }
+    .chat-bubble.me {
+      background: linear-gradient(90deg,#0284c7 0%, #22d3ee 100%);
+      color: white;
+      margin-left: auto;
+      margin-right: 0;
+    }
+    .chat-input-area {
+      background: #fff;
+      border-radius: 9999px;
+      box-shadow: 0 2px 10px #22d3ee22;
+      padding: 0.5em 1em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid #e0f7fa;
+    }
+    .chat-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 0.5em;
+      font-size: 1.04em;
+    }
+    .chat-send-btn {
+      background: linear-gradient(90deg, #22d3ee 0%, #0284c7 100%);
+      color: #fff;
+      border-radius: 9999px;
+      padding: 0.5em 1.3em;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s;
+    }
+    .chat-send-btn:hover {
+      background: linear-gradient(90deg, #0284c7 0%, #22d3ee 100%);
+    }
+    /* Notification dropdown */
+    .notif-dropdown {
+      position: absolute;
+      right: 0;
+      top: 54px;
+      min-width: 260px;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 6px 32px #0284c744;
+      z-index: 51;
+      animation: fadeIn 0.4s;
+      padding: 8px 0;
+      border: 1px solid #e0f7fa;
+    }
+    .notif-item {
+      padding: 13px 18px;
+      border-bottom: 1px solid #e0f7fa;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-size: 1.02em;
+    }
+    .notif-item:last-child {
+      border-bottom: none;
+    }
+    .notif-item:hover {
+      background: #e0f7fa;
+    }
+    .notif-empty {
+      text-align: center;
+      color: #888;
+      padding: 16px 0;
+      font-size: 1.03em;
+    }
+    @media (max-width: 640px) {
+      .notif-dropdown {
+        min-width: 180px;
+        font-size: 0.95em;
+        right: 8px;
+      }
+      .game-list-item, .game-room-list-item {
+        padding: 10px 10px;
+        gap: 9px;
+      }
+      .post-media { max-height: 180px;}
+      .story-img { width:50px; height:50px;}
+      .nav-container { border-radius: 0 0 18px 18px; }
+    }
+    /* Animations for fade in and slide up */
+    .animate-fadeIn {
+      animation: fadeIn 0.7s;
+    }
+    .animate-slideUp {
+      animation: slideUp 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @keyframes slideUp {
+      from { transform: translateY(32px); opacity: 0;}
+      to { transform: translateY(0); opacity: 1;}
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- Login Modal (appears before access to main features) -->
+  <div id="login-modal-bg" class="fixed inset-0 modal-bg"></div>
+  <div id="login-modal" class="fixed inset-0 flex items-center justify-center modal">
+    <div class="glass-card max-w-sm w-full p-8 relative animate-slideUp">
+      <h2 class="text-3xl font-extrabold mb-3 text-blue-700 text-center tracking-tight">Wavenor Social Login</h2>
+      <form id="login-form" class="space-y-4" autocomplete="off" onsubmit="submitLogin(event)">
+        <div>
+          <label class="block font-semibold mb-1 text-gray-800">Username</label>
+          <input type="text" id="login-username" class="w-full px-3 py-2 rounded-lg border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-300 transition" placeholder="Enter your username" required>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1 text-gray-800">Password</label>
+          <input type="password" id="login-password" class="w-full px-3 py-2 rounded-lg border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-300 transition" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="ad-btn w-full mt-2">Login</button>
+      </form>
+      <div id="login-error" class="login-error hidden"></div>
+      <div class="mt-5 text-center text-gray-500 text-sm">
+        Don't have an account? <button class="menu-link" onclick="showSignup()">Sign up</button>
+      </div>
+      <!-- Signup form hidden by default -->
+      <form id="signup-form" class="space-y-4 hidden animate-fadeIn" autocomplete="off" onsubmit="submitSignup(event)">
+        <div>
+          <label class="block font-semibold mb-1 text-gray-800">Choose Username</label>
+          <input type="text" id="signup-username" class="w-full px-3 py-2 rounded-lg border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-300 transition" placeholder="Choose a username" required>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1 text-gray-800">Choose Password</label>
+          <input type="password" id="signup-password" class="w-full px-3 py-2 rounded-lg border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-300 transition" placeholder="Set a password" required>
+        </div>
+        <button type="submit" class="ad-btn w-full mt-2">Sign Up</button>
+        <div class="mt-3 text-center text-gray-500 text-sm">
+          Already have an account? <button class="menu-link" onclick="showLogin()">Login</button>
+        </div>
+      </form>
+      <div id="signup-success" class="hidden mt-5 text-green-600 font-semibold text-center animate-fadeIn"></div>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <nav id="app-nav" class="nav-container flex items-center justify-between px-6 py-4 sticky top-0 z-40 hidden-app relative animate-slideUp">
+    <div class="flex items-center gap-3">
+      <img src="https://img.icons8.com/fluency/48/000000/waves.png" class="w-11 h-11" alt="Wavenor Social Logo">
+      <span class="text-2xl md:text-3xl font-extrabold text-blue-700 tracking-tight">Wavenor Social</span>
+    </div>
+    <div class="flex items-center gap-3 md:gap-6 relative">
+      <button class="menu-link active-tab" onclick="showSection('home')">Home</button>
+      <button class="menu-link" onclick="showSection('stories')">Stories</button>
+      <button class="menu-link" onclick="showSection('reels')">Reels</button>
+      <button class="menu-link" onclick="showSection('friends')">Friends</button>
+      <button class="menu-link" onclick="showSection('games')">Games</button>
+      <span class="relative" id="notif-nav">
+        <button class="ad-btn px-5 py-2 relative" style="font-size:1em; background:linear-gradient(90deg,#22d3ee 0%,#0284c7 100%);" onclick="toggleNotifications()" title="Notifications">
+          <span class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="#fff"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 7.165 6 9.388 6 12v2.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+            <span>Notifications</span>
+            <span id="notif-dot" class="notif-dot"></span>
+          </span>
+        </button>
+        <div id="notif-dropdown" class="notif-dropdown hidden"></div>
+      </span>
+      <button class="ad-btn" onclick="openAdModal()">Advertise</button>
+      <button class="ad-btn bg-gradient-to-r from-blue-600 to-blue-400 ml-2 px-5 py-2"
+        style="font-size:1em;" onclick="logout()" title="Logout">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main id="main-app" class="flex-1 flex flex-col items-center px-2 py-6 md:px-0 hidden-app">
+    <!-- Home Section -->
+    <section id="home-section" class="w-full max-w-2xl mx-auto">
+      <div class="glass-card px-7 py-7 mb-8 animate-slideUp">
+        <h2 class="text-3xl font-extrabold mb-2 text-blue-700 tracking-tighter">Welcome to Wavenor Social 🌊</h2>
+        <p class="text-gray-700 mb-4 text-lg">
+          Connect, share, and make waves with your friends. Explore stories, reels, games, notifications, and more!
+        </p>
+        <button class="ad-link" onclick="openAdModal()">Promote a Post or Product</button>
+      </div>
+      <!-- Example Post -->
+      <div class="glass-card px-7 py-5 mb-6 animate-slideUp">
+        <div class="flex items-center gap-5 mb-2">
+          <img src="https://randomuser.me/api/portraits/women/44.jpg" class="story-img" alt="User">
+          <div>
+            <span class="font-bold friend-name">Jane Doe</span>
+            <span class="text-gray-500 ml-2 text-xs">2 hrs ago</span>
+          </div>
+        </div>
+        <p class="mb-2 text-gray-800 text-lg">Had an amazing time at the beach today! 🌊☀️</p>
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=500&q=80" class="post-media" alt="Beach">
+        <div class="mt-3 flex gap-4">
+          <button class="ad-link" onclick="openAdModal('post')">Promote This Post</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stories Section -->
+    <section id="stories-section" class="w-full max-w-2xl mx-auto hidden">
+      <h2 class="text-2xl font-extrabold text-blue-700 mb-4 tracking-tight">Stories</h2>
+      <div class="flex gap-5 mb-8">
+        <img src="https://randomuser.me/api/portraits/men/32.jpg" class="story-img" alt="Story 1">
+        <img src="https://randomuser.me/api/portraits/women/12.jpg" class="story-img" alt="Story 2">
+        <img src="https://randomuser.me/api/portraits/men/85.jpg" class="story-img" alt="Story 3">
+      </div>
+      <p class="text-gray-700 text-lg">See what your friends are up to today!</p>
+    </section>
+
+    <!-- Reels Section -->
+    <section id="reels-section" class="w-full max-w-2xl mx-auto hidden">
+      <h2 class="text-2xl font-extrabold text-blue-700 mb-4 tracking-tight">Reels</h2>
+      <video class="reel-video mb-4" controls poster="https://images.unsplash.com/photo-1465101162946-4377e57745c3?auto=format&fit=crop&w=400&q=80">
+        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <p class="text-gray-700 text-lg">Watch trending reels from the community!</p>
+    </section>
+
+    <!-- Friends Section -->
+    <section id="friends-section" class="w-full max-w-2xl mx-auto hidden">
+      <h2 class="text-2xl font-extrabold text-blue-700 mb-4 tracking-tight">Friends</h2>
+      <div class="flex flex-col gap-3 mb-6">
+        <span class="friend-name" onclick="openChat('Alex Johnson')">Alex Johnson</span>
+        <span class="friend-name" onclick="openChat('Maya Lee')">Maya Lee</span>
+        <span class="friend-name" onclick="openChat('Chris Kim')">Chris Kim</span>
+      </div>
+      <div id="chat-area" class="glass-card shadow-md p-5 mb-2 hidden animate-fadeIn">
+        <div class="mb-2 flex items-center gap-3">
+          <img id="chat-avatar" class="w-10 h-10 rounded-full border-2 border-blue-300" src="" alt="Friend">
+          <span id="chat-username" class="font-bold text-blue-700"></span>
+          <span class="ml-auto text-xs text-gray-400" id="chat-status">Online</span>
+          <button class="text-blue-400 ml-2" onclick="closeChat()" style="font-size:1.5em; font-weight:bold;">&times;</button>
+        </div>
+        <div id="chat-messages" class="mb-3 flex flex-col gap-2" style="min-height:70px;max-height:220px;overflow-y:auto;"></div>
+        <div class="chat-input-area mt-3">
+          <input type="text" id="chat-input" class="chat-input" placeholder="Type a message..." autocomplete="off">
+          <button class="chat-send-btn" onclick="sendChatMsg()">Send</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Games Section -->
+    <section id="games-section" class="w-full max-w-2xl mx-auto hidden">
+      <h2 class="text-2xl font-extrabold text-blue-700 mb-4 tracking-tight">Games</h2>
+      <div class="game-list-item" onclick="alert('Opening game: Wave Runner')">
+        <img src="https://img.icons8.com/fluency/48/000000/wave.png" class="w-7 h-7" alt="Wave Runner">
+        <span>Wave Runner</span>
+      </div>
+      <div class="game-list-item" onclick="alert('Opening game: Ocean Trivia')">
+        <img src="https://img.icons8.com/fluency/48/000000/brain.png" class="w-7 h-7" alt="Ocean Trivia">
+        <span>Ocean Trivia</span>
+      </div>
+      <h3 class="mt-6 mb-3 text-lg font-semibold text-blue-600">Game Rooms</h3>
+      <div class="game-room-list-item" onclick="openGameRoom('Beach Chat')">
+        <img src="https://img.icons8.com/fluency/48/000000/chat.png" class="w-6 h-6" alt="Beach Chat">
+        <span>Beach Chat <span class="text-xs text-gray-500">(4 online)</span></span>
+      </div>
+      <div class="game-room-list-item" onclick="openGameRoom('Wave Trivia Room')">
+        <img src="https://img.icons8.com/fluency/48/000000/brainstorm.png" class="w-6 h-6" alt="Wave Trivia">
+        <span>Wave Trivia Room <span class="text-xs text-gray-500">(2 online)</span></span>
+      </div>
+      <!-- Game Room Chat Modal -->
+      <div id="game-room-modal-bg" class="fixed inset-0 modal-bg hidden"></div>
+      <div id="game-room-modal" class="fixed inset-0 flex items-center justify-center modal hidden">
+        <div class="glass-card max-w-md w-full p-6 relative animate-slideUp">
+          <button class="absolute top-3 right-4 text-gray-400 text-2xl font-bold hover:text-blue-500" onclick="closeGameRoom()">&times;</button>
+          <h2 id="game-room-title" class="text-xl font-bold mb-2 text-blue-700"></h2>
+          <div id="game-room-messages" class="mb-3 flex flex-col gap-2" style="min-height:70px;max-height:220px;overflow-y:auto;"></div>
+          <div class="chat-input-area mt-1">
+            <input type="text" id="game-room-input" class="chat-input" placeholder="Type a message..." autocomplete="off">
+            <button class="chat-send-btn" onclick="sendGameRoomMsg()">Send</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Advertisement Modal -->
+  <div id="ad-modal-bg" class="fixed inset-0 modal-bg hidden"></div>
+  <div id="ad-modal" class="fixed inset-0 flex items-center justify-center modal opacity-0 pointer-events-none">
+    <div class="glass-card max-w-md w-full p-8 relative animate-slideUp">
+      <button class="absolute top-3 right-4 text-gray-400 text-2xl font-bold hover:text-blue-500" onclick="closeAdModal()">&times;</button>
+      <h2 class="text-2xl font-bold mb-2 text-blue-700">Advertise Your Product or Post</h2>
+      <p class="text-gray-700 mb-4">Reach more people by promoting your product or post. Set your budget and details below.</p>
+      <form id="ad-form" class="space-y-4" onsubmit="submitAd(event)">
+        <div>
+          <label class="block font-semibold mb-1 text-gray-800">What do you want to promote?</label>
+          <select id="ad-type" class="w-full px-3 py-2 rounded-lg border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-300 transition" required>
+            <option value="" disabled selected>Select one...</option>
+            <option value="product">Product</option>
+            <option value="post">Post</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1 text-gray-800">Title / Name</label>
+          <input type="text" id="ad-title" class="w-full px-3 py-2 rounded-lg border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-300 transition" placeholder="e.g. Beach Sunglasses" required>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1 text-gray-800">Description</label>
+          <textarea id="ad-desc" class="w-full px-3 py-2 rounded-lg border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-300 transition" rows="2" placeholder="Describe your product or post..." required></textarea>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1 text-gray-800">Promotion Amount (USD)</label>
+          <input type="number" id="ad-amount" min="1" step="0.01" class="w-full px-3 py-2 rounded-lg border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-300 transition" placeholder="e.g. 20" required>
+        </div>
+        <button type="submit" class="ad-btn w-full mt-3">Submit Advertisement</button>
+      </form>
+      <div id="ad-success" class="hidden mt-5 text-green-600 font-semibold text-center animate-fadeIn"></div>
+    </div>
+  </div>
+
+  <footer class="text-center py-5 text-gray-500 text-sm mt-auto hidden-app" id="app-footer">
+    © 2024 Wavenor Social. Crafted by OneCompiler.
+  </footer>
+
+  <script>
+    // Section navigation
+    function showSection(section) {
+      const sections = ['home', 'stories', 'reels', 'friends', 'games'];
+      sections.forEach(s => {
+        document.getElementById(s + '-section').classList.add('hidden');
+      });
+      document.getElementById(section + '-section').classList.remove('hidden');
+
+      // Active tab styling
+      document.querySelectorAll('.menu-link').forEach((el, idx) => {
+        if ((section === 'home' && idx === 0) ||
+            (section === 'stories' && idx === 1) ||
+            (section === 'reels' && idx === 2) ||
+            (section === 'friends' && idx === 3) ||
+            (section === 'games' && idx === 4)
+          ) {
+          el.classList.add('active-tab');
+        } else {
+          el.classList.remove('active-tab');
+        }
+      });
+
+      // Hide chat area if navigating away from friends
+      if(section !== 'friends') closeChat();
+    }
+
+    // Advertisement modal
+    function openAdModal(adType) {
+      document.getElementById('ad-modal-bg').classList.remove('hidden');
+      const modal = document.getElementById('ad-modal');
+      modal.classList.remove('pointer-events-none');
+      setTimeout(() => { modal.style.opacity = '1'; }, 10);
+
+      document.getElementById('ad-form').style.display = 'block';
+      document.getElementById('ad-success').classList.add('hidden');
+      if (adType === 'post') {
+        document.getElementById('ad-type').value = 'post';
+      } else {
+        document.getElementById('ad-type').value = '';
+      }
+    }
+
+    function closeAdModal() {
+      document.getElementById('ad-modal-bg').classList.add('hidden');
+      const modal = document.getElementById('ad-modal');
+      modal.style.opacity = '0';
+      setTimeout(() => { modal.classList.add('pointer-events-none'); }, 300);
+    }
+
+    // Advertisement submit simulation
+    function submitAd(event) {
+      event.preventDefault();
+      document.getElementById('ad-form').style.display = 'none';
+      document.getElementById('ad-success').textContent = 'Thank you! Your ad submission has been received and is under review.';
+      document.getElementById('ad-success').classList.remove('hidden');
+      setTimeout(closeAdModal, 2000);
+    }
+
+    // Animate fade in on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.add('animate-fadeIn');
+      // Hide main app and nav until login
+      document.getElementById('main-app').classList.add('hidden-app');
+      document.getElementById('app-nav').classList.add('hidden-app');
+      document.getElementById('app-footer').classList.add('hidden-app');
+      document.getElementById('login-modal-bg').classList.remove('hidden');
+      document.getElementById('login-modal').classList.remove('hidden');
+      showLogin(); // show login form by default
+      // Demo notifications
+      updateNotifications();
+    });
+
+    // Login simulation
+    function submitLogin(event) {
+      event.preventDefault();
+      const username = document.getElementById('login-username').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+      // Simulate login (accept any non-empty values)
+      if (username.length > 0 && password.length > 0) {
+        // Hide login modal, show app
+        document.getElementById('login-modal-bg').classList.add('hidden');
+        document.getElementById('login-modal').classList.add('hidden');
+        document.getElementById('main-app').classList.remove('hidden-app');
+        document.getElementById('app-nav').classList.remove('hidden-app');
+        document.getElementById('app-footer').classList.remove('hidden-app');
+        showSection('home');
+        updateNotifications();
+      } else {
+        showLoginError('Please enter both username and password.');
+      }
+    }
+
+    function showLoginError(msg) {
+      const err = document.getElementById('login-error');
+      err.textContent = msg;
+      err.classList.remove('hidden');
+    }
+
+    // Signup simulation
+    function submitSignup(event) {
+      event.preventDefault();
+      const username = document.getElementById('signup-username').value.trim();
+      const password = document.getElementById('signup-password').value.trim();
+      if (username.length > 0 && password.length > 0) {
+        document.getElementById('signup-form').style.display = 'none';
+        document.getElementById('signup-success').textContent = 'Sign up successful! Please log in.';
+        document.getElementById('signup-success').classList.remove('hidden');
+        setTimeout(() => {
+          document.getElementById('signup-success').classList.add('hidden');
+          showLogin();
+        }, 1800);
+      } else {
+        showSignupError('Please fill both fields.');
+      }
+    }
+
+    function showSignupError(msg) {
+      // Reuse login error for signup
+      const err = document.getElementById('login-error');
+      err.textContent = msg;
+      err.classList.remove('hidden');
+    }
+
+    function showSignup() {
+      document.getElementById('login-form').classList.add('hidden');
+      document.getElementById('signup-form').classList.remove('hidden');
+      document.getElementById('login-error').classList.add('hidden');
+      document.getElementById('signup-success').classList.add('hidden');
+    }
+
+    function showLogin() {
+      document.getElementById('login-form').classList.remove('hidden');
+      document.getElementById('signup-form').classList.add('hidden');
+      document.getElementById('login-error').classList.add('hidden');
+      document.getElementById('signup-success').classList.add('hidden');
+    }
+
+    // Logout
+    function logout() {
+      document.getElementById('main-app').classList.add('hidden-app');
+      document.getElementById('app-nav').classList.add('hidden-app');
+      document.getElementById('app-footer').classList.add('hidden-app');
+      document.getElementById('login-modal-bg').classList.remove('hidden');
+      document.getElementById('login-modal').classList.remove('hidden');
+      showLogin();
+      // Reset active tab to Home
+      showSection('home');
+    }
+
+    // --- Notifications Feature ---
+    let NOTIFICATIONS = [
+      { type: 'message', from: 'Maya Lee', text: 'Hey! Check out my new story!', ts: 'just now' },
+      { type: 'game', from: 'Wave Trivia Room', text: 'New question available!', ts: '3 min ago' },
+      { type: 'friend', from: 'Alex Johnson', text: 'sent you a friend request.', ts: '8 min ago' }
+    ];
+    let notifOpen = false;
+
+    function updateNotifications() {
+      const notifDot = document.getElementById('notif-dot');
+      notifDot.style.display = NOTIFICATIONS.length ? 'inline-block' : 'none';
+      renderNotifDropdown();
+    }
+    function toggleNotifications() {
+      notifOpen = !notifOpen;
+      const drop = document.getElementById('notif-dropdown');
+      if (notifOpen) {
+        drop.classList.remove('hidden');
+        renderNotifDropdown();
+        document.addEventListener('click', notifDocClick, { once: true });
+      } else {
+        drop.classList.add('hidden');
+      }
+    }
+    function notifDocClick(e) {
+      if (!document.getElementById('notif-nav').contains(e.target)) {
+        notifOpen = false;
+        document.getElementById('notif-dropdown').classList.add('hidden');
+      }
+    }
+    function renderNotifDropdown() {
+      const drop = document.getElementById('notif-dropdown');
+      drop.innerHTML = '';
+      if (!NOTIFICATIONS.length) {
+        drop.innerHTML = `<div class="notif-empty">No new notifications</div>`;
+      } else {
+        NOTIFICATIONS.forEach((n, i) => {
+          drop.innerHTML += `
+            <div class="notif-item" onclick="handleNotif(${i})">
+              <span class="font-semibold text-blue-700">${n.from}</span> ${n.text}
+              <span class="text-xs text-gray-400 ml-2">${n.ts}</span>
+            </div>`;
+        });
+      }
+    }
+    function handleNotif(idx) {
+      const notif = NOTIFICATIONS[idx];
+      if (notif.type === 'message') {
+        showSection('friends');
+        openChat(notif.from);
+      } else if (notif.type === 'game') {
+        showSection('games');
+        openGameRoom(notif.from);
+      } else if (notif.type === 'friend') {
+        showSection('friends');
+        openChat(notif.from);
+      }
+      NOTIFICATIONS.splice(idx, 1);
+      notifOpen = false;
+      document.getElementById('notif-dropdown').classList.add('hidden');
+      updateNotifications();
+    }
+
+    // --- Chat Feature for Friends ---
+    const chatAvatars = {
+      "Alex Johnson": "https://randomuser.me/api/portraits/men/32.jpg",
+      "Maya Lee": "https://randomuser.me/api/portraits/women/12.jpg",
+      "Chris Kim": "https://randomuser.me/api/portraits/men/85.jpg"
+    };
+    const chatMessagesData = {
+      "Alex Johnson": [
+        {me:false, text:"Hi! Ready for Wave Runner today?"},
+        {me:true, text:"Absolutely, let's make some waves!"},
+      ],
+      "Maya Lee": [
+        {me:false, text:"Hey! Check out my new story!"},
+        {me:true, text:"Loved it 🌊!"},
+      ],
+      "Chris Kim": [
+        {me:false, text:"Are you joining the trivia tonight?"},
+      ]
+    };
+    let currentChatUser = null;
+
+    function openChat(username) {
+      currentChatUser = username;
+      document.getElementById('chat-area').classList.remove('hidden');
+      document.getElementById('chat-username').textContent = username;
+      document.getElementById('chat-avatar').src = chatAvatars[username] || "https://img.icons8.com/fluency/48/000000/waves.png";
+      document.getElementById('chat-status').textContent = "Online";
+      renderChatMessages();
+      setTimeout(()=>{document.getElementById('chat-input').focus();},200);
+    }
+    function closeChat() {
+      document.getElementById('chat-area').classList.add('hidden');
+      currentChatUser = null;
+    }
+    function renderChatMessages() {
+      const msgs = chatMessagesData[currentChatUser] || [];
+      const area = document.getElementById('chat-messages');
+      area.innerHTML = '';
+      msgs.forEach(msg => {
+        area.innerHTML += `<div class="chat-bubble ${msg.me?'me':''}">${msg.text}</div>`;
+      });
+      area.scrollTop = area.scrollHeight;
+    }
+    function sendChatMsg() {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text || !currentChatUser) return;
+      chatMessagesData[currentChatUser] = chatMessagesData[currentChatUser] || [];
+      chatMessagesData[currentChatUser].push({me:true, text:text});
+      renderChatMessages();
+      input.value = '';
+    }
+    document.getElementById('chat-input').addEventListener('keydown',function(e){
+      if(e.key==='Enter'){sendChatMsg();}
+    });
+
+    // --- Game Room Chat Feature ---
+    let currentGameRoom = null;
+    const gameRoomMessages = {
+      "Beach Chat": [
+        { from:"Alex", text:"Anyone up for a game?" },
+        { from:"Maya", text:"Let’s start!" }
+      ],
+      "Wave Trivia Room": [
+        { from:"Chris", text:"First question: What's the largest ocean?" }
+      ]
+    };
+    function openGameRoom(roomName) {
+      currentGameRoom = roomName;
+      document.getElementById('game-room-modal-bg').classList.remove('hidden');
+      document.getElementById('game-room-modal').classList.remove('hidden');
+      document.getElementById('game-room-title').textContent = roomName;
+      renderGameRoomMessages();
+      setTimeout(()=>{document.getElementById('game-room-input').focus();},200);
+    }
+    function closeGameRoom() {
+      document.getElementById('game-room-modal-bg').classList.add('hidden');
+      document.getElementById('game-room-modal').classList.add('hidden');
+      currentGameRoom = null;
+    }
+    function renderGameRoomMessages() {
+      const msgs = gameRoomMessages[currentGameRoom] || [];
+      const area = document.getElementById('game-room-messages');
+      area.innerHTML = '';
+      msgs.forEach(msg => {
+        area.innerHTML += `<div class="chat-bubble"><span class="font-bold text-blue-700 mr-1">${msg.from}:</span>${msg.text}</div>`;
+      });
+      area.scrollTop = area.scrollHeight;
+    }
+    function sendGameRoomMsg() {
+      const input = document.getElementById('game-room-input');
+      const text = input.value.trim();
+      if (!text || !currentGameRoom) return;
+      gameRoomMessages[currentGameRoom] = gameRoomMessages[currentGameRoom] || [];
+      gameRoomMessages[currentGameRoom].push({from:"Me", text:text});
+      renderGameRoomMessages();
+      input.value = '';
+    }
+    document.getElementById('game-room-input').addEventListener('keydown',function(e){
+      if(e.key==='Enter'){sendGameRoomMsg();}
+    });
+
+    // Close game room modal background click
+    document.getElementById('game-room-modal-bg').addEventListener('click', closeGameRoom);
+
+  </script>
+</body>
+</html>
